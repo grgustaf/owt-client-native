@@ -101,8 +101,10 @@ void PeerConnectionDependencyFactory::
     field_trial_ += "OWT-EchoCanceller3/Enabled/";
   }
   int delay_bwe_weight = GlobalConfiguration::GetDelayBasedBweWeight();
+  RTC_LOG(LS_ERROR) << "delay_bwe_weight set to " << delay_bwe_weight;
   field_trial_ +=
       "OWT-DelayBweWeight/" + std::to_string(delay_bwe_weight) + "/";
+  RTC_LOG(LS_ERROR) << "field_trial_ string: " << field_trial_;
   webrtc::field_trial::InitFieldTrialsFromString(field_trial_.c_str());
   if (!rtc::InitializeSSL()) {
     RTC_LOG(LS_ERROR) << "Failed to initialize SSL.";
