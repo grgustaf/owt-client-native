@@ -36,8 +36,8 @@ def _patch():
   #  subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=TESTING_PATH)
   if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0004-Remove-webrtc_overrides.patch')], shell=useShell, cwd=THIRD_PARTY_PATH)) != 0:
     subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=THIRD_PARTY_PATH)
-  #if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0005-Fixed-compile-issue-and-disable-thin-archive.patch')], shell=useShell, cwd=BUILD_PATH)) != 0:
-  #  subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=BUILD_PATH)
+  if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0005-Fixed-compile-issue-and-disable-thin-archive.patch')], shell=useShell, cwd=BUILD_PATH)) != 0:
+    subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=BUILD_PATH)
   if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0007-Fix-examples-path-error.patch')], shell=useShell, cwd=BUILD_PATH)) != 0:
     subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=BUILD_PATH)
   #if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0009-Fix-compile-issue-for-linux-g-build.patch')], shell=useShell, cwd=BUILD_PATH)) != 0:
@@ -54,6 +54,9 @@ def _patch():
     subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=LIBJPEG_TURBO_PATH)
   if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0012-ios-Adds-CFBundleShortVersionString-to-the-plist-for.patch')], shell=useShell, cwd=TESTING_PATH)) != 0:
     subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=TESTING_PATH)
+  if (subprocess.call(['git', 'am', os.path.join(PATCH_PATH, '0013-Thin-archive-v2.patch')], shell=useShell, cwd=BUILD_PATH)) != 0:
+      sys.exit(1)
+#    subprocess.call(['git', 'am', '--skip'], shell=useShell, cwd=BUILD_PATH)
 
 def main(argv):
   _patch()
