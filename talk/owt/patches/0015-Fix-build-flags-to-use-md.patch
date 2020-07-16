@@ -1,0 +1,28 @@
+commit eeb7b2e26f2314542c9f62b8c860999ccb194b27
+Author: Geoff Gustafson <geoff@linux.intel.com>
+Date:   Wed Jul 15 15:26:25 2020 -0700
+
+    Fix build flags to use /MD
+
+diff --git a/config/win/BUILD.gn b/config/win/BUILD.gn
+index 7b44f0e43..aeb248ed6 100644
+--- a/config/win/BUILD.gn
++++ b/config/win/BUILD.gn
+@@ -455,7 +455,7 @@ config("default_crt") {
+       configs = [ ":dynamic_crt" ]
+     } else {
+       # Desktop Windows: static CRT.
+-      configs = [ ":static_crt" ]
++      configs = [ ":dynamic_crt" ]
+     }
+   }
+ }
+@@ -468,7 +468,7 @@ config("release_crt") {
+   if (is_component_build) {
+     cflags = [ "/MD" ]
+   } else {
+-    cflags = [ "/MT" ]
++    cflags = [ "/MD" ]
+   }
+ }
+ 
