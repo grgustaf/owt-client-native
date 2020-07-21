@@ -150,7 +150,7 @@ void P2PClient::Send(
     const std::string& message,
     std::function<void()> on_success,
     std::function<void(std::unique_ptr<Exception>)> on_failure) {
-  RTC_LOG(LS_ERROR) << "P2PClient::Send() called.";
+  RTC_LOG(LS_INFO) << "P2PClient::Send() called.";
   Send(target_id, message, true, on_success, on_failure);
 }
 
