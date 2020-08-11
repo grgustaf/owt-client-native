@@ -751,7 +751,7 @@ void ConferencePeerConnectionChannel::Stop(
   RTC_LOG(LS_INFO) << "Stop session.";
 }
 void ConferencePeerConnectionChannel::GetConnectionStats(
-    std::function<void(std::shared_ptr<RTCStatsReport>)> on_success,
+    std::function<void(std::shared_ptr<ConnectionStats>)> on_success,
     std::function<void(std::unique_ptr<Exception>)> on_failure) {
   if (!published_stream_ && !subscribed_stream_) {
     if (on_failure != nullptr) {
@@ -764,11 +764,20 @@ void ConferencePeerConnectionChannel::GetConnectionStats(
     }
     return;
   }
-  if (subscribed_stream_ || published_stream_) {
-    rtc::scoped_refptr<FunctionalStandardRTCStatsCollectorCallback> observer =
-        FunctionalStandardRTCStatsCollectorCallback::Create(
-            std::move(on_success));
-    peer_connection_->GetStats(observer);
+  if (subscribed_stream_) {
+    scoped_refptr<FunctionalStatsObserver> observer =
+        FunctionalStatsObserver::Create(on_success);
+    GetStatsMessage* stats_message = new GetStatsMessage(
+        observer.get(), subscribed_stream_->MediaStream(),
+        webrtc::PeerConnectionInterface::kStatsOutputLevelStandard);
+    pc_thread_->Post(RTC_FROM_HERE, this, kMessageTypeGetStats, stats_message);
+  } else {
+    scoped_refptr<FunctionalStatsObserver> observer =
+        FunctionalStatsObserver::Create(on_success);
+    GetStatsMessage* stats_message = new GetStatsMessage(
+        observer.get(), published_stream_->MediaStream(),
+        webrtc::PeerConnectionInterface::kStatsOutputLevelStandard);
+    pc_thread_->Post(RTC_FROM_HERE, this, kMessageTypeGetStats, stats_message);
   }
 }
 void ConferencePeerConnectionChannel::GetStats(
@@ -779,9 +788,10 @@ void ConferencePeerConnectionChannel::GetStats(
   }
   scoped_refptr<FunctionalNativeStatsObserver> observer =
       FunctionalNativeStatsObserver::Create(on_success);
-  peer_connection_->GetStats(
-      observer, nullptr,
+  GetNativeStatsMessage* stats_message = new GetNativeStatsMessage(
+      observer.get(), nullptr,
       webrtc::PeerConnectionInterface::kStatsOutputLevelStandard);
+  pc_thread_->Post(RTC_FROM_HERE, this, kMessageTypeGetStats, stats_message);
 }
 void ConferencePeerConnectionChannel::OnSignalingMessage(
     sio::message::ptr message) {
